@@ -21,9 +21,11 @@ export class GameScene extends Phaser.Scene {
 
   constructor() {
     super({ key: 'GameScene' });
+    console.log('GameScene constructor called');
   }
 
   create(): void {
+    console.log('GameScene create method called');
     const { width, height } = this.cameras.main;
 
     // Background
@@ -40,8 +42,10 @@ export class GameScene extends Phaser.Scene {
     // UI Elements
     this.createUI();
 
+    console.log('About to create card grid');
     // Create card grid
     this.createCardGrid();
+    console.log('Card grid created successfully');
 
     // Start timer
     this.startTime = Date.now();
@@ -52,8 +56,11 @@ export class GameScene extends Phaser.Scene {
       loop: true,
     });
 
+    console.log('About to create sound effects');
     // Create simple sound effects (using Web Audio API via Phaser)
-    this.createSoundEffects();
+    // Temporarily disabled for debugging
+    // this.createSoundEffects();
+    console.log('Sound effects creation skipped');
   }
 
   private createBackground(): void {
@@ -64,7 +71,9 @@ export class GameScene extends Phaser.Scene {
     gradient.fillGradientStyle(0x3498db, 0x3498db, 0x2980b9, 0x2980b9, 1);
     gradient.fillRect(0, 0, width, height);
 
+    // Temporarily disabled animated circles for debugging
     // Animated circles in background
+    /*
     for (let i = 0; i < 10; i++) {
       const circle = this.add.circle(
         Phaser.Math.Between(0, width),
@@ -84,6 +93,7 @@ export class GameScene extends Phaser.Scene {
         ease: 'Sine.easeInOut',
       });
     }
+    */
   }
 
   private createUI(): void {
@@ -188,7 +198,8 @@ export class GameScene extends Phaser.Scene {
       }
     }
 
-    // Entrance animation
+    // Entrance animation - temporarily disabled for debugging
+    /*
     this.cards.forEach((card, index) => {
       card.setAlpha(0);
       card.setScale(0);
@@ -201,6 +212,7 @@ export class GameScene extends Phaser.Scene {
         ease: 'Back.easeOut',
       });
     });
+    */
   }
 
   private onCardClicked(card: Card): void {

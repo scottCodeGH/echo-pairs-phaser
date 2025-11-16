@@ -18,6 +18,7 @@ export class Card extends Phaser.GameObjects.Container {
     pairId: number,
     icon: string
   ) {
+    console.log(`Creating card ${cardId} at position (${x}, ${y})`);
     super(scene, x, y);
     this.cardId = cardId;
     this.pairId = pairId;

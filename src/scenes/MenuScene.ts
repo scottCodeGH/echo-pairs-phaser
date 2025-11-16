@@ -3,9 +3,11 @@ import Phaser from 'phaser';
 export class MenuScene extends Phaser.Scene {
   constructor() {
     super({ key: 'MenuScene' });
+    console.log('MenuScene constructor called');
   }
 
   create(): void {
+    console.log('MenuScene create method called');
     const { width, height } = this.cameras.main;
 
     // Background gradient effect using rectangles
@@ -13,70 +15,11 @@ export class MenuScene extends Phaser.Scene {
     gradient.fillGradientStyle(0x3498db, 0x3498db, 0x2980b9, 0x2980b9, 1);
     gradient.fillRect(0, 0, width, height);
 
-    // Animated background particles
+    // Create UI elements first (so they're on top)
+    this.createUI();
+
+    // Animated background particles (behind UI)
     this.createBackgroundParticles();
-
-    // Game title with shadow
-    const titleShadow = this.add.text(width / 2 + 3, height / 2 - 97, 'ECHO PAIRS', {
-      fontSize: '64px',
-      fontFamily: 'Arial, sans-serif',
-      color: '#000000',
-      fontStyle: 'bold',
-    }).setOrigin(0.5).setAlpha(0.3);
-
-    const title = this.add.text(width / 2, height / 2 - 100, 'ECHO PAIRS', {
-      fontSize: '64px',
-      fontFamily: 'Arial, sans-serif',
-      color: '#ffffff',
-      fontStyle: 'bold',
-    }).setOrigin(0.5);
-
-    // Subtitle
-    const subtitle = this.add.text(width / 2, height / 2 - 40, 'Memory Matching Puzzle', {
-      fontSize: '24px',
-      fontFamily: 'Arial, sans-serif',
-      color: '#ecf0f1',
-    }).setOrigin(0.5);
-
-    // Pulsing title animation
-    this.tweens.add({
-      targets: title,
-      scale: 1.05,
-      duration: 1000,
-      yoyo: true,
-      repeat: -1,
-      ease: 'Sine.easeInOut',
-    });
-
-    // Play button
-    const playButton = this.createButton(width / 2, height / 2 + 50, 'PLAY', () => {
-      this.scene.start('GameScene');
-    });
-
-    // Instructions
-    const instructions = this.add.text(
-      width / 2,
-      height / 2 + 140,
-      'Find all matching pairs!\nClick cards to flip them over.',
-      {
-        fontSize: '18px',
-        fontFamily: 'Arial, sans-serif',
-        color: '#ecf0f1',
-        align: 'center',
-      }
-    ).setOrigin(0.5);
-
-    // Credits
-    const credits = this.add.text(
-      width / 2,
-      height - 30,
-      'Built with Phaser & TypeScript',
-      {
-        fontSize: '14px',
-        fontFamily: 'Arial, sans-serif',
-        color: '#bdc3c7',
-      }
-    ).setOrigin(0.5);
   }
 
   private createButton(
@@ -144,17 +87,79 @@ export class MenuScene extends Phaser.Scene {
     });
 
     button.on('pointerdown', () => {
-      this.tweens.add({
-        targets: button,
-        scale: 0.95,
-        duration: 100,
-        yoyo: true,
-        ease: 'Power2',
-        onComplete: onClick,
-      });
+      console.log('Button pointerdown event fired!');
+      // Simple direct call for testing
+      onClick();
     });
 
     return button;
+  }
+
+  private createUI(): void {
+    const { width, height } = this.cameras.main;
+
+    // Game title with shadow
+    const titleShadow = this.add.text(width / 2 + 3, height / 2 - 97, 'ECHO PAIRS', {
+      fontSize: '64px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#000000',
+      fontStyle: 'bold',
+    }).setOrigin(0.5).setAlpha(0.3);
+
+    const title = this.add.text(width / 2, height / 2 - 100, 'ECHO PAIRS', {
+      fontSize: '64px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#ffffff',
+      fontStyle: 'bold',
+    }).setOrigin(0.5);
+
+    // Subtitle
+    const subtitle = this.add.text(width / 2, height / 2 - 40, 'Memory Matching Puzzle', {
+      fontSize: '24px',
+      fontFamily: 'Arial, sans-serif',
+      color: '#ecf0f1',
+    }).setOrigin(0.5);
+
+    // Pulsing title animation
+    this.tweens.add({
+      targets: title,
+      scale: 1.05,
+      duration: 1000,
+      yoyo: true,
+      repeat: -1,
+      ease: 'Sine.easeInOut',
+    });
+
+    // Play button
+    const playButton = this.createButton(width / 2, height / 2 + 50, 'PLAY', () => {
+      console.log('Play button clicked!');
+      this.scene.start('GameScene');
+    });
+
+    // Instructions
+    const instructions = this.add.text(
+      width / 2,
+      height / 2 + 140,
+      'Find all matching pairs!\nClick cards to flip them over.',
+      {
+        fontSize: '18px',
+        fontFamily: 'Arial, sans-serif',
+        color: '#ecf0f1',
+        align: 'center',
+      }
+    ).setOrigin(0.5);
+
+    // Credits
+    const credits = this.add.text(
+      width / 2,
+      height - 30,
+      'Built with Phaser & TypeScript',
+      {
+        fontSize: '14px',
+        fontFamily: 'Arial, sans-serif',
+        color: '#bdc3c7',
+      }
+    ).setOrigin(0.5);
   }
 
   private createBackgroundParticles(): void {
