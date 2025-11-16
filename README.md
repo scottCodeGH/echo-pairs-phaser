@@ -1,1 +1,1 @@
-# echo-pairs-phaser
+Echo Pairs is a casual, browser-based memory matching game built with TypeScript and Phaser. Players flip over cards to find matching pairs in a colorful, animated grid designed for quick, satisfying sessions. With randomized layouts, snappy flip animations, and light audio/visual feedback, Echo Pairs delivers a polished, replayable puzzle experience that runs smoothly on desktop and mobile browsers.
