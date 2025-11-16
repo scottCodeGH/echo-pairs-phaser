@@ -141,9 +141,13 @@ export class Card extends Phaser.GameObjects.Container {
 
     this._isFlipped = !this._isFlipped;
 
-    // Play flip sound
-    if (this.scene.sound.get('flip')) {
-      this.scene.sound.play('flip', { volume: 0.3 });
+    // Play flip sound (if available)
+    try {
+      if (this.scene.sound.get('flip')) {
+        this.scene.sound.play('flip', { volume: 0.3 });
+      }
+    } catch (error) {
+      // Silently ignore sound errors
     }
 
     // First half of flip (shrink horizontally)
@@ -175,9 +179,13 @@ export class Card extends Phaser.GameObjects.Container {
   public setMatched(): void {
     this._isMatched = true;
 
-    // Play match sound
-    if (this.scene.sound.get('match')) {
-      this.scene.sound.play('match', { volume: 0.4 });
+    // Play match sound (if available)
+    try {
+      if (this.scene.sound.get('match')) {
+        this.scene.sound.play('match', { volume: 0.4 });
+      }
+    } catch (error) {
+      // Silently ignore sound errors
     }
 
     // Celebratory animation

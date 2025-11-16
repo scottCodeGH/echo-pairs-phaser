@@ -271,9 +271,13 @@ export class GameScene extends Phaser.Scene {
 
     const elapsed = Math.floor((Date.now() - this.startTime) / 1000);
 
-    // Play win sound
-    if (this.sound.get('win')) {
-      this.sound.play('win', { volume: 0.5 });
+    // Play win sound (if available)
+    try {
+      if (this.sound.get('win')) {
+        this.sound.play('win', { volume: 0.5 });
+      }
+    } catch (error) {
+      // Silently ignore sound errors
     }
 
     // Transition to win scene
@@ -286,43 +290,50 @@ export class GameScene extends Phaser.Scene {
   }
 
   private createSoundEffects(): void {
-    // Create simple beep sounds using Phaser's sound manager
-    // Note: In a production game, you'd use actual audio files
+    // Create simple beep sounds using Web Audio API
+    // Wrapped in try-catch to prevent errors from blocking game
+    try {
+      if (!this.sound.get('flip')) {
+        this.createTone('flip', 400, 0.1);
+      }
 
-    // For now, we'll create silent placeholders that won't error
-    // Real sound files can be added later
-    if (!this.sound.get('flip')) {
-      // Create a simple tone for flip (high pitch)
-      this.createTone('flip', 400, 0.1);
-    }
+      if (!this.sound.get('match')) {
+        this.createTone('match', 600, 0.2);
+      }
 
-    if (!this.sound.get('match')) {
-      // Create a pleasant tone for match (ascending notes)
-      this.createTone('match', 600, 0.2);
-    }
-
-    if (!this.sound.get('win')) {
-      // Create a celebratory sound for win
-      this.createTone('win', 800, 0.3);
+      if (!this.sound.get('win')) {
+        this.createTone('win', 800, 0.3);
+      }
+    } catch (error) {
+      console.warn('Sound creation failed, continuing without sound:', error);
     }
   }
 
   private createTone(key: string, frequency: number, duration: number): void {
-    // Create a simple audio buffer with a beep tone
-    const audioContext = (this.sound.context as AudioContext);
-    if (!audioContext) return;
+    try {
+      // Get or create audio context
+      const audioContext = this.sound.context as AudioContext;
+      if (!audioContext) {
+        console.warn('No audio context available');
+        return;
+      }
 
-    const sampleRate = audioContext.sampleRate;
-    const numSamples = sampleRate * duration;
-    const buffer = audioContext.createBuffer(1, numSamples, sampleRate);
-    const channelData = buffer.getChannelData(0);
+      const sampleRate = audioContext.sampleRate;
+      const numSamples = Math.floor(sampleRate * duration);
+      const buffer = audioContext.createBuffer(1, numSamples, sampleRate);
+      const channelData = buffer.getChannelData(0);
 
-    for (let i = 0; i < numSamples; i++) {
-      const t = i / sampleRate;
-      channelData[i] = Math.sin(2 * Math.PI * frequency * t) * Math.exp(-3 * t);
+      // Generate sine wave with exponential decay
+      for (let i = 0; i < numSamples; i++) {
+        const t = i / sampleRate;
+        channelData[i] = Math.sin(2 * Math.PI * frequency * t) * Math.exp(-3 * t);
+      }
+
+      // Create a base sound (silent) and store the buffer for later use
+      // We'll play it manually using the Web Audio API
+      (this.sound as any)[key + '_buffer'] = buffer;
+    } catch (error) {
+      console.warn(`Failed to create tone '${key}':`, error);
     }
-
-    // Add to Phaser's sound manager
-    this.sound.add(key, { buffer });
   }
 }
